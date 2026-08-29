@@ -1,9 +1,9 @@
 #pragma once
-#include <iostream>
 #include <vector>
 #include <array>
 #include "Player.hpp"
 #include "LocalPlayer.hpp"
+#include "Console.hpp"
 
 
 struct Spectator {
@@ -38,7 +38,7 @@ struct Spectator {
                     continue;
                 if (std::fabs(p->ViewYaw - Myself->ViewYaw) < 0.1f && p->IsDead)
                 {
-                    std::cout << "Spec: " << p->ViewYaw << ", Play: " << Myself->ViewYaw << std::endl;
+                    Console::InfoF("Spectator detected (player yaw: %.1f, local yaw: %.1f)", p->ViewYaw, Myself->ViewYaw);
                     TempTotalSpectators++;
                 }
             }

@@ -173,12 +173,16 @@ reinit:
 			if (memMap)
 			{
 				memMap = false;
-				LOG("[!] Initialization failed with Memory map? Try without MMap\n");
+				LOG("[!] Initialization failed with Memory map? Try without MMap");
 				goto reinit;
 			}
-			LOG("[!] Initialization failed! Is the DMA in use or disconnected?\n");
+			LOG("[!] Initialization failed! Is the DMA in use or disconnected?");
 			return false;
 		}
+
+		VMMDLL_ConfigSet(this->vHandle, VMMDLL_OPT_CORE_PRINTF_ENABLE, 0);
+		VMMDLL_ConfigSet(this->vHandle, VMMDLL_OPT_CORE_VERBOSE, 0);
+		VMMDLL_ConfigSet(this->vHandle, VMMDLL_OPT_CORE_VERBOSE_EXTRA, 0);
 
 		ULONG64 FPGA_ID, DEVICE_ID;
 
@@ -215,9 +219,9 @@ reinit:
 	}
 	this->current_process.process_name = process_name;
 	if (!mem.FixCr3())
-		std::cout << "Failed to fix CR3" << std::endl;
+		Console::Info("Failed to fix CR3");
 	else
-		std::cout << "CR3 fixed" << std::endl;
+		Console::Info("CR3 fixed");
 
 	this->current_process.base_address = GetBaseDaddy(process_name);
 	if (!this->current_process.base_address)

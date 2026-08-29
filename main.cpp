@@ -16,6 +16,7 @@
 #include "Misc.hpp"
 
 #include "Render.hpp"
+#include "Console.hpp"
 
 
 // Game Objects
@@ -300,7 +301,7 @@ void UpdateCore() {
                             Players->push_back(p);
                     }
                 }
-                std::cout << "Players Populated" << std::endl;
+                Console::InfoF("Players populated: %zu", Players->size());
                 PlayersPopulated = true;
             }
 
@@ -332,44 +333,42 @@ void UpdateCore() {
         }
     }
     catch (const std::exception& ex) {
-        std::cout << "Error: " << ex.what() << std::endl;
+        Console::InfoF("Error: %s", ex.what());
         return;
     }
 }
 
 void Profiling() {
 	while (true) {
-		std::cout << "---- Profiling ----" << std::endl;
-		std::cout << "LocalPlayer: " << LocalPlayerProfilingElapsed.count() << "us" << std::endl;
-		std::cout << "PlayerPopulate: " << PlayerPopulateProfilingElapsed.count() << "us" << std::endl;
-		std::cout << "PlayerAttributes: " << PlayerAttributesProfilingElapsed.count() << "us" << std::endl;
-        std::cout << "ReadPlayers: " << ReadPlayersProfilingElapsed.count() << "us" << std::endl;
-		std::cout << "GameCamera: " << GameCameraProfilingElapsed.count() << "us" << std::endl;
-		std::cout << "ESP: " << ESPProfilingElapsed.count() << "us" << std::endl;
-		std::cout << "AimAssist: " << AimAssistProfilingElapsed.count() << "us" << std::endl;
+		Console::Info("---- Profiling ----");
+		Console::InfoF("LocalPlayer: %lldus", LocalPlayerProfilingElapsed.count());
+		Console::InfoF("PlayerPopulate: %lldus", PlayerPopulateProfilingElapsed.count());
+		Console::InfoF("PlayerAttributes: %lldus", PlayerAttributesProfilingElapsed.count());
+        Console::InfoF("ReadPlayers: %lldus", ReadPlayersProfilingElapsed.count());
+		Console::InfoF("GameCamera: %lldus", GameCameraProfilingElapsed.count());
+		Console::InfoF("ESP: %lldus", ESPProfilingElapsed.count());
+		Console::InfoF("AimAssist: %lldus", AimAssistProfilingElapsed.count());
 		std::this_thread::sleep_for(std::chrono::seconds(5));
 	}
 }
 
 int main()
 {
-    std::cout << "-----------------------------" << std::endl;
-	std::cout << "Apex Legends DMA Paste" << std::endl;
-	std::cout << "-----------------------------" << std::endl;
+    Console::Info("Apex Legends DMA Paste");
 
 	// Initialize DMA
 	if (!mem.Init("r5apex.exe", true, false))
 	{
-		std::cout << "Failed to initilize DMA" << std::endl;
-        std::cout << "Press ENTER to continue...";
+		Console::Info("Failed to initialize DMA");
+        Console::Info("Press ENTER to continue...");
         std::cin.get();
 	}
-    std::cout << "DMA initilized" << std::endl;
+    Console::Info("DMA initialized");
 
     if (!mem.GetKeyboard()->InitKeyboard())
     {
-        std::cout << "Failed to initialize keyboard hotkeys through kernel." << std::endl;
-        std::cout << "Press ENTER to continue...";
+        Console::Info("Failed to initialize keyboard hotkeys through kernel.");
+        Console::Info("Press ENTER to continue...");
         std::cin.get();
     }
 
@@ -380,17 +379,13 @@ int main()
         for (int i = 0; i < 15000; i++)
             Dummies->push_back(new Player(i, Myself, Map));
 
-        std::cout << "-----------------------------" << std::endl;
         std::locale::global(std::locale("C"));
         Config::GetInstance().Initialize("config.cfg", AimAssist, GameCamera, ESP);
-        std::cout << "Config initialized" << std::endl;
-        std::cout << "-----------------------------" << std::endl;
+        Console::Info("Config initialized");
         GameCamera->Initialize();
         ESP->Initialize();
         AimAssist->Initialize();
-        std::cout << "-----------------------------" << std::endl;
-        std::cout << "Core initialized" << std::endl;
-        std::cout << "-----------------------------" << std::endl;
+        Console::Info("Core initialized");
 
         // Threads
         std::thread coreThread(UpdateCore);
@@ -400,7 +395,7 @@ int main()
     }
     catch (...) {}
 
-    std::cout << "Press ENTER to exit...";
-    std::cin.get();  // Wait for user to press Enter
+    Console::Info("Press ENTER to exit...");
+    std::cin.get();
     return 0;
 }
